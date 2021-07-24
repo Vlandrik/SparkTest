@@ -27,7 +27,7 @@ namespace SparkTest.API.Configurators
                         ValidateActor = false,
                         ValidAudience = TokenOptionsHelper.AUDIENCE,
                         ValidateLifetime = true,
-                        IssuerSigningKey = TokenOptionsHelper.GetSymmetricSecurityKey(TokenOptionsHelper.SIGNIN_KEY),
+                        IssuerSigningKey = TokenOptionsHelper.GetSymmetricSecurityKey(TokenOptionsHelper.SIGNING_KEY),
                         ValidateIssuerSigningKey = true,
                         LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
                         {

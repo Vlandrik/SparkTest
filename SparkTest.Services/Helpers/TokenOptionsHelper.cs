@@ -8,7 +8,7 @@ namespace SparkTest.Services.Helpers
         public const int ACCESS_TOKEN_LIFETIME = 1;
         public const string ISSUER = "Issuer";
         public const string AUDIENCE = "Audience";
-        public const string SIGNIN_KEY = "ServerKey";
+        public const string SIGNING_KEY = "ServerSigningKeyServerSigningKey";
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey(string key)
         {

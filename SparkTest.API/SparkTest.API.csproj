@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.17" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SparkTest.DAL\SparkTest.DAL.csproj" />
     <ProjectReference Include="..\SparkTest.Services\SparkTest.Services.csproj" />
   </ItemGroup>

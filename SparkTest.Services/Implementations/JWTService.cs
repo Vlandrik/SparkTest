@@ -47,7 +47,7 @@ namespace SparkTest.Services.Implementations
                 notBefore: now,
                 claims: identity.Claims,
                 expires: lifetime,
-                signingCredentials: new SigningCredentials(GetSymmetricSecurityKey(TokenOptionsHelper.SIGNIN_KEY), SecurityAlgorithms.HmacSha256));
+                signingCredentials: new SigningCredentials(GetSymmetricSecurityKey(TokenOptionsHelper.SIGNING_KEY), SecurityAlgorithms.HmacSha256));
         }
 
         public async Task<JWTTokenModel> CreateUserTokenAsync(ApplicationUser user)
