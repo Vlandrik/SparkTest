@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SparkTest.DAL\SparkTest.DAL.csproj" />
+    <ProjectReference Include="..\SparkTest.Services\SparkTest.Services.csproj" />
+  </ItemGroup>
+
 </Project>
