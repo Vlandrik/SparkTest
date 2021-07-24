@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace SparkTest.DAL.Implementations.Repository
+namespace SparkTest.DAL.Interfaces.Repository
 {
     public interface IRepository<T> where T : class
     {

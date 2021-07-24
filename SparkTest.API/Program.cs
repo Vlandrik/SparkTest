@@ -1,11 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SparkTest.API
 {
@@ -20,7 +15,15 @@ namespace SparkTest.API
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureAppConfiguration((context, builder) =>
+                    {
+                        var config = new ConfigurationBuilder()
+                            .AddJsonFile("appsettings.json", optional: false)
+                            .Build();
+
+                        builder.AddJsonFile("appsettings.json");
+
+                    }).UseStartup<Startup>();
                 });
     }
 }
