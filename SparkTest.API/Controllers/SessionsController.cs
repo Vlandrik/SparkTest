@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SparkTest.API.Models;
 using SparkTest.Services.Interfaces;
 using SparkTest.Services.Models;
 using System;
@@ -12,33 +11,31 @@ namespace SparkTest.API.Controllers
     [ApiController]
     public class SessionsController : ControllerBase
     {
-        private IJWTService _jwtService;
+        private readonly IAuthService _authService;
 
-        public SessionsController(IJWTService jwtService)
+        public SessionsController(IAuthService authService)
         {
-            _jwtService = jwtService;
+            _authService = authService;
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(JWTTokenModel), 200)]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login([FromBody] LoginRequestModel model)
         {
-            var result = await _jwtService.CreateUserTokenAsync(new DAL.Domain.Entities.ApplicationUser
+            try
             {
-                CreatedAt = DateTime.UtcNow,
-                Id = Guid.NewGuid().ToString(),
-                Name = "TestName"
-            });
+                var result = await _authService.GetTokenUserCredentials(new CredentialsModel
+                {
+                    Email = model.Email,
+                    Password = model.Password
+                });
 
-            return Ok(result);
-        }
-
-        [HttpGet("test")]
-        [ProducesResponseType(200)]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Test()
-        {
-            return Ok();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
     }
 }

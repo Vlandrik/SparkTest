@@ -9,7 +9,7 @@ namespace SparkTest.Services.Interfaces
 {
     public interface IJWTService
     {
-        Task<ClaimsIdentity> GetIdentity(ApplicationUser user, bool isRefreshToken);
+        Task<ClaimsIdentity> GetIdentity(ApplicationUser user);
 
         JwtSecurityToken CreateToken(DateTime now, ClaimsIdentity identity, DateTime lifetime);
 

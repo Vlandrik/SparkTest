@@ -21,27 +21,6 @@ namespace SparkTest.DAL.Implementations.Repository
             _context = context;
         }
 
-        private IMongoCollection<T> Entities
-        {
-            get
-            {
-                if (_entities == null)
-                {
-                    _entities = _context.Get<T>(); ;
-                }
-
-                return _entities;
-            }
-        }
-
-        private void ThrowIfEntityIsNull(T entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
-        }
-
         public virtual IQueryable<T> Table
         {
             get
@@ -110,7 +89,7 @@ namespace SparkTest.DAL.Implementations.Repository
             }
         }
 
-        public async Task InsertAsync(T entity)
+        public async Task Insert(T entity)
         {
             try
             {
@@ -123,7 +102,7 @@ namespace SparkTest.DAL.Implementations.Repository
             }
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task Update(T entity)
         {
             try
             {
@@ -136,7 +115,7 @@ namespace SparkTest.DAL.Implementations.Repository
             }
         }
 
-        public async Task UpdateManyAsync(FilterDefinition<T> filter, UpdateDefinition<T> update)
+        public async Task UpdateMany(FilterDefinition<T> filter, UpdateDefinition<T> update)
         {
             try
             {
@@ -153,7 +132,7 @@ namespace SparkTest.DAL.Implementations.Repository
             return Entities.Find(predicate).CountDocuments() > 0;
         }
 
-        public async Task InsertManyAsync(IEnumerable<T> entity)
+        public async Task InsertMany(IEnumerable<T> entity)
         {
             try
             {
@@ -197,6 +176,27 @@ namespace SparkTest.DAL.Implementations.Repository
             catch (Exception dbEx)
             {
                 throw dbEx;
+            }
+        }
+
+        private IMongoCollection<T> Entities
+        {
+            get
+            {
+                if (_entities == null)
+                {
+                    _entities = _context.Get<T>(); ;
+                }
+
+                return _entities;
+            }
+        }
+
+        private void ThrowIfEntityIsNull(T entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
             }
         }
     }

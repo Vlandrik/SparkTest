@@ -14,11 +14,7 @@ namespace SparkTest.Services.Implementations
 {
     public class JWTService : IJWTService
     {
-        public JWTService()
-        {
-        }
-
-        public async Task<ClaimsIdentity> GetIdentity(ApplicationUser user, bool isRefreshToken)
+        public async Task<ClaimsIdentity> GetIdentity(ApplicationUser user)
         {
             if (user == null)
             {
@@ -54,7 +50,7 @@ namespace SparkTest.Services.Implementations
         {
             var dateNow = DateTime.UtcNow;
 
-            var accessIdentity = await GetIdentity(user, false);
+            var accessIdentity = await GetIdentity(user);
 
             if (accessIdentity == null)
             {

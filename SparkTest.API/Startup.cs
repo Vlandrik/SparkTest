@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SparkTest.API.Configurators;
@@ -9,17 +10,29 @@ using SparkTest.DAL.Interfaces.DataContext;
 using SparkTest.DAL.Interfaces.Repository;
 using SparkTest.Services.Implementations;
 using SparkTest.Services.Interfaces;
+using SparkTest.Services.Settings;
 using System.Text.Json.Serialization;
 
 namespace SparkTest.API
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<UserInfo>(_configuration.GetSection("UserInfo"));
+
             services.AddTransient<IDataContext, DataContext>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IJWTService, JWTService>();
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddMvcCore(options =>
             {

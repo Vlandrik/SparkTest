@@ -25,13 +25,13 @@ namespace SparkTest.DAL.Interfaces.Repository
 
         Task<T> GetById(string id);
 
-        Task InsertAsync(T entity);
+        Task Insert(T entity);
 
-        Task InsertManyAsync(IEnumerable<T> entity);
+        Task InsertMany(IEnumerable<T> entity);
 
-        Task UpdateAsync(T entity);
+        Task Update(T entity);
 
-        Task UpdateManyAsync(FilterDefinition<T> filter, UpdateDefinition<T> update);
+        Task UpdateMany(FilterDefinition<T> filter, UpdateDefinition<T> update);
 
         Task DeleteById(string id);
     }
