@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SparkTest.API.Models;
 using SparkTest.DAL.Domain.Entities;
 using SparkTest.Services.Interfaces;
 using System.Collections.Generic;
@@ -13,18 +14,21 @@ namespace SparkTest.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
+        private readonly IMessageService _messageSender;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IMessageService messageSender)
         {
             _usersService = usersService;
+            _messageSender = messageSender;
         }
 
-        [HttpGet("test")]
+        [HttpPost]
         [ProducesResponseType(200)]
-        [AllowAnonymous]
-        public async Task<IActionResult> Test()
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Create(UserRequestModel model)
         {
-            await _usersService.CreateUser("Test");
+            await _messageSender.CreateUserMessage(model.Name);
+
             return Ok();
         }
 

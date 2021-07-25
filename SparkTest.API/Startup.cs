@@ -33,6 +33,7 @@ namespace SparkTest.API
             services.AddScoped<IJWTService, JWTService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             services.AddMvcCore(options =>
             {
