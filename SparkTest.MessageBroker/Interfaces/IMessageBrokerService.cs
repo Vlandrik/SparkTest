@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 
 namespace SparkTest.MessageBroker.Interfaces
 {
-    public interface IMessageBrokerService
+    public interface IMessageBrokerService : IDisposable
     {
         Task PublishMessage(string message);
 
-        Task ReceiveMessage(Action<string> action);
+        void ConsumeMessage();
+
+        void ConfigureMessageConsumer(Action<string> action);
     }
 }

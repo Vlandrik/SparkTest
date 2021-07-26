@@ -13,15 +13,46 @@ namespace SparkTest.Console
         {
             System.Console.ReadKey();
 
+            var service = GetUserService();
+            using var messageBrokerService = GetMessageBroker(service);
+
+            while (true)
+            {
+                await ConsumeMessage(messageBrokerService);
+            }
+        }
+
+        private static async Task ConsumeMessage(MessageBrokerService messageBrokerService)
+        {
+            messageBrokerService.ConsumeMessage();
+
+            System.Console.WriteLine("MESSAGE CONSUMING IS GOING ON");
+
+            await Task.Delay(1000);
+        }
+
+        private static UsersService GetUserService()
+        {
             var dataContext = new DataContext("mongodb://localhost:27017", "SparkTest");
 
             var repository = new Repository<ApplicationUser>(dataContext);
 
             var service = new UsersService(repository);
 
+            return service;
+        }
+
+        private static MessageBrokerService GetMessageBroker(UsersService service)
+        {
             var messageBrokerService = new MessageBrokerService();
 
-            await messageBrokerService.ReceiveMessage((string message) => service.CreateUser(message).Wait());
+            messageBrokerService.ConfigureMessageConsumer((string message) =>
+            {
+                service.CreateUser(message).Wait();
+
+                System.Console.WriteLine($"MESSAGE CONSUMED - {message}");
+            });
+            return messageBrokerService;
         }
     }
 }

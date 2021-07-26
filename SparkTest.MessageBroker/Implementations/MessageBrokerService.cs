@@ -3,7 +3,6 @@ using RabbitMQ.Client.Events;
 using SparkTest.MessageBroker.Constants;
 using SparkTest.MessageBroker.Interfaces;
 using System;
-using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,59 +12,83 @@ namespace SparkTest.MessageBroker.Implementations
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly ConnectionFactory _connectionFactory;
+
+        private EventingBasicConsumer _consumer;
+        private bool _consumerConfigured;
 
         public MessageBrokerService()
         {
-            _connectionFactory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory() { HostName = "localhost" };
 
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
+
+            _channel.QueueDeclare(queue: MessageBrokerConstants.QUEUE,
+              durable: false, exclusive: false, autoDelete: false, arguments: null);
+        }
+
+        ~MessageBrokerService()
+        {
+            Dispose(false);
         }
 
         public async Task PublishMessage(string message)
         {
-            using (var connection = _connectionFactory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            var body = Encoding.UTF8.GetBytes(message);
+
+            _channel.BasicPublish(exchange: "",
+                routingKey: MessageBrokerConstants.QUEUE,
+                basicProperties: null,
+                body: body);
+        }
+
+        public void ConfigureMessageConsumer(Action<string> action)
+        {
+            var consumer = GetConsumer();
+
+            consumer.Received += (model, ea) =>
             {
-                channel.QueueDeclare(queue: MessageBrokerConstants.QUEUE,
-                    durable: false, exclusive: false, autoDelete: false, arguments: null);
+                var body = ea.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
 
-                var body = Encoding.UTF8.GetBytes(message);
+                action.Invoke(message);
+            };
 
-                channel.BasicPublish(exchange: "",
-                    routingKey: MessageBrokerConstants.QUEUE,
-                    basicProperties: null,
-                    body: body);
+            _consumerConfigured = true;
+        }
+
+        public void ConsumeMessage()
+        {
+            if (!_consumerConfigured)
+                throw new Exception("Consumer hasn't been configured");
+
+            _channel.BasicConsume(queue: MessageBrokerConstants.QUEUE, autoAck: true, consumer: GetConsumer());
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_channel != null)
+                    _channel.Close();
+
+                if (_connection != null)
+                    _connection.Close();
             }
         }
 
-        public async Task ReceiveMessage(Action<string> action)
+        private EventingBasicConsumer GetConsumer()
         {
-            using (var connection = _connectionFactory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: MessageBrokerConstants.QUEUE, durable: false,
-                    exclusive: false, autoDelete: false, arguments: null);
+            if (_consumer == null)
+                _consumer = new EventingBasicConsumer(_channel);
 
-                var consumer = new EventingBasicConsumer(channel);
-
-                consumer.Received += (model, ea) =>
-                {
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-
-                    Debug.WriteLine($"MESSAGE RECEIVED - {message}");
-
-                    action.Invoke(message);
-                };
-
-                while (true)
-                {
-                    channel.BasicConsume(queue: MessageBrokerConstants.QUEUE, autoAck: true, consumer: consumer);
-
-                    // Consume every second
-                    await Task.Delay(1000);
-                }
-            }
+            return _consumer;
         }
     }
 }
