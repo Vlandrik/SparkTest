@@ -1,13 +1,21 @@
-﻿using SparkTest.Services.Interfaces;
+﻿using SparkTest.MessageBroker.Interfaces;
+using SparkTest.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace SparkTest.Services.Implementations
 {
     public class MessageService : IMessageService
     {
-        public Task CreateUserMessage(string name)
+        private readonly IMessageBrokerService _messageBrokerService;
+
+        public MessageService(IMessageBrokerService messageBrokerService)
         {
-            throw new System.NotImplementedException();
+            _messageBrokerService = messageBrokerService;
+        }
+
+        public async Task CreateUserMessage(string name)
+        {
+            await _messageBrokerService.PublishMessage(name);
         }
     }
 }

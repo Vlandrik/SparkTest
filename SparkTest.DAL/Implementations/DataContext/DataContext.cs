@@ -16,6 +16,13 @@ namespace SparkTest.DAL.Implementations.DataContext
             database = client.GetDatabase(config["MongoConnection:Database"]);
         }
 
+        public DataContext(string connection, string databaseName)
+        {
+            var client = new MongoClient(connection);
+
+            database = client.GetDatabase(databaseName);
+        }
+
         public virtual IMongoCollection<TEntity> Get<TEntity>() where TEntity : class
         {
             var name = new Pluralizer().Pluralize(typeof(TEntity).Name);
