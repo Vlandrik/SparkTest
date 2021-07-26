@@ -8,6 +8,8 @@ using SparkTest.DAL.Implementations.DataContext;
 using SparkTest.DAL.Implementations.Repository;
 using SparkTest.DAL.Interfaces.DataContext;
 using SparkTest.DAL.Interfaces.Repository;
+using SparkTest.MessageBroker.Implementations;
+using SparkTest.MessageBroker.Interfaces;
 using SparkTest.Services.Implementations;
 using SparkTest.Services.Interfaces;
 using SparkTest.Services.Settings;
@@ -34,6 +36,7 @@ namespace SparkTest.API
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IMessageBrokerService, MessageBrokerService>();
 
             services.AddMvcCore(options =>
             {

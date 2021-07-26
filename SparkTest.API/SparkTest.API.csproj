@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SparkTest.DAL\SparkTest.DAL.csproj" />
+    <ProjectReference Include="..\SparkTest.MessageBroker\SparkTest.MessageBroker.csproj" />
     <ProjectReference Include="..\SparkTest.Services\SparkTest.Services.csproj" />
   </ItemGroup>
 
