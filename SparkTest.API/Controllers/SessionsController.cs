@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SparkTest.API.Models;
 using SparkTest.Services.Interfaces;
 using SparkTest.Services.Models;
@@ -12,10 +13,12 @@ namespace SparkTest.API.Controllers
     public class SessionsController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ILogger<SessionsController> _logger;
 
-        public SessionsController(IAuthService authService)
+        public SessionsController(IAuthService authService, ILogger<SessionsController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -34,6 +37,7 @@ namespace SparkTest.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogDebug("Invalid credentials");
                 return Unauthorized(ex.Message);
             }
         }
